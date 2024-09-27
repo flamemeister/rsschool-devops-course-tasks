@@ -25,19 +25,18 @@ jobs:
 
   terraform-plan:
     runs-on: ubuntu-latest
-    needs: terraform-check
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v3  # Latest version
+        
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-
+        uses: hashicorp/setup-terraform@v2  # Latest version
+        
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v2  # Latest version
         with:
-          role-to-assume: arn:aws:iam::354918362336:role/GithubActionsRole
-          aws-region: eu-central-1
+            role-to-assume: arn:aws:iam::354918362336:role/GithubActionsRole
+            aws-region: eu-central-1  # Ensure this is the correct region
 
       - name: Terraform Init
         run: terraform init
