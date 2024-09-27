@@ -21,25 +21,22 @@ jobs:
           terraform_version: 1.4.0  # Установка Terraform
 
       - name: Format Check
-        run: terraform fmt -check  # Проверка форматирования кода Terraform
+        run: terraform fmt -check  
 
   terraform-plan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3  # Проверка кода из репозитория
-        
-      - name: Print OIDC Token  # Добавляем шаг для вывода OIDC токена для отладки
-        run: echo "OIDC Token: "${{ steps.aws-credentials.outputs.oidc-token }}"
+        uses: actions/checkout@v3
 
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2  # Установка Terraform
+        uses: hashicorp/setup-terraform@v2  
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2  # Конфигурируем AWS credentials с помощью OIDC
+        uses: aws-actions/configure-aws-credentials@v2  
         with:
-          role-to-assume: arn:aws:iam::354918362336:role/GithubActionsRole  # Указание правильной IAM роли
-          aws-region: eu-central-1  # Регион AWS
+          role-to-assume: arn:aws:iam::354918362336:role/GithubActionsRole  
+          aws-region: eu-central-1  
 
       - name: Terraform Init
         run: terraform init  # Инициализация Terraform
