@@ -1,0 +1,25 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow when code is pushed to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::354918362336:role/GithubActionsRole
+          aws-region: eu-central-1
+          
+      - name: Terraform Init and Apply
+        run: |
+          terraform init
+          terraform apply -auto-approve
