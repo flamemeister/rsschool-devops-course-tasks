@@ -42,7 +42,7 @@ jobs:
         run: terraform init  # Инициализация Terraform
 
       - name: Terraform Plan
-        run: terraform plan  # Планирование изменений Terraform
+        run: terraform plan -out=terraform.tfplan  # Планирование изменений Terraform с сохранением плана
 
   terraform-apply:
     runs-on: ubuntu-latest
@@ -65,4 +65,4 @@ jobs:
         run: terraform init  # Инициализация Terraform
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve  # Применение изменений в инфраструктуре Terraform
+        run: terraform apply -auto-approve terraform.tfplan  # Применение изменений на основе сохраненного плана
