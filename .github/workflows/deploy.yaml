@@ -73,4 +73,4 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve terraform.tfplan
-        working-directory: ./  # Root directory for Terraform files
+        working-directory: ./  
