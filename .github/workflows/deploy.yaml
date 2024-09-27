@@ -1,0 +1,71 @@
+name: Terraform Deployment
+
+on:
+  push:
+    branches:
+      - main  # Запускается при push в ветку main
+  pull_request:
+    branches:
+      - main  # Запускается при pull request в ветку main
+
+jobs:
+  terraform-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Проверка кода из репозитория
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.4.0  # Установка Terraform
+
+      - name: Format Check
+        run: terraform fmt -check  # Проверка форматирования кода Terraform
+
+  terraform-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Проверка кода из репозитория
+        
+      - name: Print OIDC Token  # Добавляем шаг для вывода OIDC токена для отладки
+        run: echo "OIDC Token: "${{ steps.aws-credentials.outputs.oidc-token }}"
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2  # Установка Terraform
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2  # Конфигурируем AWS credentials с помощью OIDC
+        with:
+          role-to-assume: arn:aws:iam::354918362336:role/GithubActionsRole  # Указание правильной IAM роли
+          aws-region: eu-central-1  # Регион AWS
+
+      - name: Terraform Init
+        run: terraform init  # Инициализация Terraform
+
+      - name: Terraform Plan
+        run: terraform plan  # Планирование изменений Terraform
+
+  terraform-apply:
+    runs-on: ubuntu-latest
+    needs: terraform-plan  # Выполняется только после успешного terraform-plan
+    if: github.ref == 'refs/heads/main'  # Применяется только для ветки main
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Проверка кода из репозитория
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2  # Установка Terraform
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2  # Конфигурируем AWS credentials с помощью OIDC
+        with:
+          role-to-assume: arn:aws:iam::354918362336:role/GithubActionsRole  # Указание правильной IAM роли
+          aws-region: eu-central-1  # Регион AWS
+
+      - name: Terraform Init
+        run: terraform init  # Инициализация Terraform
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve  # Применение изменений в инфраструктуре Terraform
