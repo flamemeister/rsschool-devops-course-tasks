@@ -8,6 +8,10 @@ on:
     branches:
       - main  # Запускается при pull request в ветку main
 
+permissions:
+  id-token: write  # Required for OIDC authentication
+  contents: read  # Required to access the repository contents
+
 jobs:
   terraform-check:
     runs-on: ubuntu-latest
